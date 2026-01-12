@@ -4,12 +4,13 @@ import os
 TOKEN = os.environ.get("BOT_TOKEN")
 bot = telebot.TeleBot(TOKEN)
 
-@bot.message_handler(commands=["start"])
-def start(message):
-    bot.reply_to(message, "Bot is running 🚀")
-
-@bot.message_handler(func=lambda m: True)
-def echo(message):
-    bot.reply_to(message, "You said: " + message.text)
+# Auto approve join requests
+@bot.chat_join_request_handler()
+def approve_request(request):
+    try:
+        bot.approve_chat_join_request(request.chat.id, request.from_user.id)
+        print("Approved:", request.from_user.username)
+    except:
+        pass
 
 bot.infinity_polling()
